@@ -1,5 +1,12 @@
 <h2> Products in the market </h2>
+<a href="#" data-hide-element='chart'>Chart</a>
+<script type='text/javascript'>
+$('[data-hide-element=chart]').on('click', function(){
+  $('#highChartContainer').toggle()
+});
+</script>
 
+<div id="highChartContainer" style="min-width: 400px; height: 400px; margin: 0 auto"> </div>
 <table>
   <tbody>
     <tr>
@@ -19,10 +26,31 @@
     <% end %>
   </tbody>
 </table>
-
-   
-   
-	
- 
-
-
+<script type='text/javascript'>
+console.log('the number of products is ' + '<%= @products.count %>');
+</script>
+<script type='text/javascript'>
+$(document).ready(function(){
+  chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'highChartContainer',
+      plotBackgroundColor:null,
+      plotBorderWidth:null,
+      plotShadow:false
+    },
+    title:{
+      text:'Product market shares, 2010'
+    },
+    series:[{
+      type: 'pie',
+      name: 'Product share',
+      data:
+      <%=
+        @products.map do |product|
+          [product.name, product.price/@sum_price]
+        end.to_json.html_safe
+      %>
+    }]
+  });
+});
+  </script>
